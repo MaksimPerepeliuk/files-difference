@@ -1,0 +1,35 @@
+{
+  "name": "frontend-project-lvl2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "NODE_ENV=production babel src --out-dir dist",
+    "prepublishOnly": "npm run build"
+  },
+  "bin": {
+    "gendiff": "dist/bin/gendiff.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaksimPerepeliuk/frontend-project-lvl2.git"
+  },
+  "author": "MaksimPerepelyuk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaksimPerepeliuk/frontend-project-lvl2/issues"
+  },
+  "homepage": "https://github.com/MaksimPerepeliuk/frontend-project-lvl2#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "@babel/node": "^7.5.0",
+    "@babel/preset-env": "^7.5.4",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.0"
+  },
+  "dependencies": {
+    "commander": "^2.20.0"
+  }
+}
