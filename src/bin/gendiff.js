@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import commander from 'commander';
-import createAction from '../index';
+import gendiff from '..';
 
 const program = new commander.Command();
 
@@ -9,6 +9,8 @@ program
   .description('Compares two configuration files and shows a difference.')
   .arguments('<firstConfig> <secondConfig>')
   .option('-f, --format [type]', 'Output format')
-  .action(createAction);
+  .action((firstConfig, secondConfig) => {
+    console.log(gendiff(firstConfig, secondConfig));
+  });
 
 program.parse(process.argv);
