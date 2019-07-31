@@ -20,3 +20,4 @@ export default [
     process: (key, file1, file2) => `+ ${key}: ${file2[key]}`,
   },
 ];
+//
