@@ -1,9 +1,15 @@
 import getParseFiles from './parsers';
-import getAst from './ast';
-import renderAst from './render';
+import buildAst from './ast';
+import renderForTree from './formatters/tree';
+import renderForPlain from './formatters/plain';
 
-export default (pathToFile1, pathToFile2) => {
+const renders = {
+  plain: renderForPlain,
+  tree: renderForTree,
+};
+
+export default (pathToFile1, pathToFile2, type = 'tree') => {
   const { parseFile1 } = getParseFiles(pathToFile1, pathToFile2);
   const { parseFile2 } = getParseFiles(pathToFile1, pathToFile2);
-  return renderAst(getAst(parseFile1, parseFile2));
+  return renders[type](buildAst(parseFile1, parseFile2));
 };

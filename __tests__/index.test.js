@@ -1,43 +1,40 @@
 import fs from 'fs';
 import gendiff from '../src';
+import _ from 'lodash';
 
-const pathToFileJson1 = '__tests__/__fixtures__/JSON/before1.json';
-const pathToFileJson2 = '__tests__/__fixtures__/JSON/after1.json';
-const pathToFileJson3 = '__tests__/__fixtures__/JSON/before2.json';
-const pathToFileJson4 = '__tests__/__fixtures__/JSON/after2.json';
-const pathToFileYaml1 = '__tests__/__fixtures__/YAML/before.yml';
-const pathToFileYaml2 = '__tests__/__fixtures__/YAML/after.yml';
-const pathToFileYaml3 = '__tests__/__fixtures__/YAML/before2.yml';
-const pathToFileYaml4 = '__tests__/__fixtures__/YAML/after2.yml';
-const pathToFileIni1 = '__tests__/__fixtures__/ini/before.ini';
-const pathToFileIni2 = '__tests__/__fixtures__/ini/after.ini';
-const pathToFileIni3 = '__tests__/__fixtures__/ini/before2.ini';
-const pathToFileIni4 = '__tests__/__fixtures__/ini/after2.ini';
-fs.writeFileSync('__tests__/__fixtures__/correct-output1', gendiff('__tests__/__fixtures__/JSON/before1.json', '__tests__/__fixtures__/JSON/after1.json'));
-const correctOutput = fs.readFileSync('__tests__/__fixtures__/correct-output1', 'utf-8');
-fs.writeFileSync('__tests__/__fixtures__/correct-output2', gendiff('__tests__/__fixtures__/JSON/before2.json', '__tests__/__fixtures__/JSON/after2.json'));
-const correctOutput2 = fs.readFileSync('__tests__/__fixtures__/correct-output2', 'utf-8');
+const correctOutputTree1 = fs.readFileSync('__tests__/__fixtures__/correct-output-tree1', 'utf-8');
+const correctOutputTree2 = fs.readFileSync('__tests__/__fixtures__/correct-output-tree2', 'utf-8');
+const correctOutputPlain1 = fs.readFileSync('__tests__/__fixtures__/correct-output-plain1', 'utf-8');
+const correctOutputPlain2 = fs.readFileSync('__tests__/__fixtures__/correct-output-plain2', 'utf-8');
 
-test('compare format .json', () => {
-  expect(gendiff(pathToFileJson1, pathToFileJson2)).toBe(correctOutput);
-});
+const pathes = [
+  ['__tests__/__fixtures__/JSON/before1.json', '__tests__/__fixtures__/JSON/after1.json', correctOutputTree1],
+  ['__tests__/__fixtures__/JSON/before2.json', '__tests__/__fixtures__/JSON/after2.json', correctOutputTree2],
+  ['__tests__/__fixtures__/YAML/before.yml', '__tests__/__fixtures__/YAML/after.yml', correctOutputTree1],
+  ['__tests__/__fixtures__/YAML/before2.yml', '__tests__/__fixtures__/YAML/after2.yml', correctOutputTree2],
+  ['__tests__/__fixtures__/ini/before.ini', '__tests__/__fixtures__/ini/after.ini', correctOutputTree1],
+  ['__tests__/__fixtures__/ini/before2.ini', '__tests__/__fixtures__/ini/after2.ini', correctOutputTree2]
+];
 
-test('compare format .yml', () => {
-  expect(gendiff(pathToFileYaml1, pathToFileYaml2)).toBe(correctOutput);
-});
+const pathes2 = [
+  ['__tests__/__fixtures__/JSON/before1.json', '__tests__/__fixtures__/JSON/after1.json', correctOutputPlain1],
+  ['__tests__/__fixtures__/JSON/before2.json', '__tests__/__fixtures__/JSON/after2.json', correctOutputPlain2],
+  ['__tests__/__fixtures__/YAML/before.yml', '__tests__/__fixtures__/YAML/after.yml', correctOutputPlain1],
+  ['__tests__/__fixtures__/YAML/before2.yml', '__tests__/__fixtures__/YAML/after2.yml', correctOutputPlain2],
+  ['__tests__/__fixtures__/ini/before.ini', '__tests__/__fixtures__/ini/after.ini', correctOutputPlain1],
+  ['__tests__/__fixtures__/ini/before2.ini', '__tests__/__fixtures__/ini/after2.ini', correctOutputPlain2]
+];
 
-test('compare format .ini', () => {
-  expect(gendiff(pathToFileIni1, pathToFileIni2)).toBe(correctOutput);
-});
+test.each(pathes)(
+  'compare two files "tree" format(%s, %s)',
+  (path1, path2, expected) => {
+    expect(gendiff(path1, path2)).toBe(expected);
+  },
+);
 
-test('compare tree format .json', () => {
-  expect(gendiff(pathToFileJson3, pathToFileJson4)).toBe(correctOutput2);
-});
-
-test('compare tree format .yml', () => {
-  expect(gendiff(pathToFileYaml3, pathToFileYaml4)).toBe(correctOutput2);
-});
-
-test('compare tree format .ini', () => {
-  expect(gendiff(pathToFileIni3, pathToFileIni4)).toBe(correctOutput2);
-});
+test.each(pathes2)(
+  'compare two files "plain" format(%s, %s)',
+  (path1, path2, expected) => {
+    expect(gendiff(path1, path2, 'plain')).toBe(expected);
+  },
+);
