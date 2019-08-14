@@ -9,12 +9,10 @@ const parsers = {
   ini: ini.parse,
 };
 
-const getParser = type => parsers[type];
-
-export default (pathToFile1, pathToFile2) => {
-  const formatFiles = path.extname(pathToFile1).slice(1);
-  const parse = getParser(formatFiles);
-  const parseFile1 = parse(fs.readFileSync(pathToFile1, 'utf-8'));
-  const parseFile2 = parse(fs.readFileSync(pathToFile2, 'utf-8'));
-  return { parseFile1, parseFile2 };
+export default (pathToFileBefore, pathToFileAfter) => {
+  const formatFile = path.extname(pathToFileBefore).slice(1);
+  const parse = parsers[formatFile];
+  const parsedFileBefore = parse(fs.readFileSync(pathToFileBefore, 'utf-8'));
+  const parsedFileAfter = parse(fs.readFileSync(pathToFileAfter, 'utf-8'));
+  return { parsedFileBefore, parsedFileAfter };
 };

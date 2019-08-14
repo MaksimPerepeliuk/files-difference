@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 const buildPropertyPath = node => (
-  node.parent.length === 0 ? node.key : `${node.parent.join('.')}.${node.key}`
+  node.parents.length === 0 ? node.key : `${node.parents.join('.')}.${node.key}`
 );
 
 const valueToString = value => (_.isObject(value) ? '[complex value]' : value);

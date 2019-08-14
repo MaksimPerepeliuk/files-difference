@@ -1,24 +1,24 @@
 import _ from 'lodash';
 
-const getSpaces = elem => (elem.depth > 2 ? ' '.repeat(elem.depth) : '');
+const getSpaces = (depth, mul = 1) => ' '.repeat(depth * mul);
 
-const objectToString = (value) => {
+const objectToString = (value, depth) => {
   if (_.isObject(value)) {
     const keys = Object.keys(value);
-    return `{\n${keys.map(elem => `      ${getSpaces(value)}${elem}: ${value[elem]}`).join('\n')}\n  }`;
+    return `{\n${getSpaces(depth)}${keys.map(elem => `${getSpaces(depth, 2)}${elem}: ${value[elem]}`).join('\n')}\n${getSpaces(depth)}}`;
   }
 
   return value;
 };
 
 const renderActions = {
-  tree: (node, fn) => `\n${getSpaces(node)}${node.key}: {${fn(node.children)}\n${getSpaces(node)}}`,
-  removed: node => `\n${getSpaces(node)}- ${node.key}: ${objectToString(node.before)}`,
-  added: node => `\n${getSpaces(node)}+ ${node.key}: ${objectToString(node.after)}`,
+  tree: (node, fn) => `\n${getSpaces(node.depth)}${node.key}: {${fn(node.children)}\n${getSpaces(node.depth)}}`,
+  removed: node => `\n${getSpaces(node.depth)}- ${node.key}: ${objectToString(node.before, node.depth)}`,
+  added: node => `\n${getSpaces(node.depth)}+ ${node.key}: ${objectToString(node.after, node.depth)}`,
   changed: node => (
-    `\n${getSpaces(node)}- ${node.key}: ${objectToString(node.before)} \n${getSpaces(node)}+ ${node.key}: ${objectToString(node.after)}`
+    `\n${getSpaces(node.depth)}- ${node.key}: ${objectToString(node.before, node.depth)} \n${getSpaces(node.depth)}+ ${node.key}: ${objectToString(node.after, node.depth)}`
   ),
-  unchanged: node => `\n  ${getSpaces(node)}${node.key}: ${objectToString(node.before)}`,
+  unchanged: node => `\n  ${getSpaces(node.depth)}${node.key}: ${objectToString(node.before, node.depth)}`,
 };
 
 const renderForTree = ast => ast.reduce((acc, node) => `${acc}${renderActions[node.type](node, renderForTree)}`, '');

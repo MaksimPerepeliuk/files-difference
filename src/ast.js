@@ -4,11 +4,10 @@ const actions = [
   {
     type: 'tree',
     check: (key, obj1, obj2) => (
-      _.has(obj1, key) && _.has(obj2, key)
-      && _.isObject(obj1[key]) && _.isObject(obj2[key])
+      _.has(obj1, key) && _.has(obj2, key) && _.isObject(obj1[key]) && _.isObject(obj2[key])
     ),
-    process: (key, file1, file2, fn, depth, parent) => (
-      { children: fn(file1[key], file2[key], depth + 2, [...parent, key]) }
+    process: (key, obj1, obj2, fn, depth, parents) => (
+      { children: fn(obj1[key], obj2[key], depth + 1, [...parents, key]) }
     ),
   },
   {
@@ -35,15 +34,15 @@ const actions = [
   },
 ];
 
-const getActionForAst = (key, file1, file2) => (
-  actions.find(({ check }) => check(key, file1, file2))
+const getActionForAst = (key, obj1, obj2) => (
+  actions.find(({ check }) => check(key, obj1, obj2))
 );
 
-const createAst = (obj1, obj2, depth = 2, parent = []) => {
+const buildAst = (obj1, obj2, depth = 1, parents = []) => {
   const keys = _.uniq([...Object.keys(obj1), ...Object.keys(obj2)]);
   return keys.map((key) => {
     const { type, process } = getActionForAst(key, obj1, obj2);
-    const { before, after, children } = process(key, obj1, obj2, createAst, depth, parent);
+    const { before, after, children } = process(key, obj1, obj2, buildAst, depth, parents);
     return {
       type,
       key,
@@ -51,9 +50,9 @@ const createAst = (obj1, obj2, depth = 2, parent = []) => {
       after,
       children,
       depth,
-      parent,
+      parents,
     };
   });
 };
 
-export default createAst;
+export default buildAst;

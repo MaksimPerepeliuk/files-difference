@@ -6,10 +6,10 @@ import renderForPlain from './formatters/plain';
 const renders = {
   plain: renderForPlain,
   tree: renderForTree,
+  json: JSON.stringify,
 };
 
-export default (pathToFile1, pathToFile2, type = 'tree') => {
-  const { parseFile1 } = getParseFiles(pathToFile1, pathToFile2);
-  const { parseFile2 } = getParseFiles(pathToFile1, pathToFile2);
-  return renders[type](buildAst(parseFile1, parseFile2));
+export default (pathToFileBefore, pathToFileAfter, type = 'tree') => {
+  const { parsedFileBefore, parsedFileAfter } = getParseFiles(pathToFileBefore, pathToFileAfter);
+  return renders[type](buildAst(parsedFileBefore, parsedFileAfter));
 };
