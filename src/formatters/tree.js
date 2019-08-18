@@ -1,11 +1,12 @@
 import _ from 'lodash';
 
-const getSpaces = (depth, mul = 1) => ' '.repeat(depth * mul);
+const getSpaces = (depth = 2, mul = 1) => ' '.repeat(depth * mul);
 
-const objectToString = (value, depth) => {
+const objectToString = (value) => {
   if (_.isObject(value)) {
     const keys = Object.keys(value);
-    return `{\n${getSpaces(depth)}${keys.map(elem => `${getSpaces(depth, 2)}${elem}: ${value[elem]}`).join('\n')}\n${getSpaces(depth)}}`;
+    const depthForObj = 2;
+    return `{\n${getSpaces(depthForObj)}${keys.map(elem => `${getSpaces(depthForObj, 2)}${elem}: ${value[elem]}`).join('\n')}\n${getSpaces(depthForObj)}}`;
   }
 
   return value;

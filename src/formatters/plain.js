@@ -10,7 +10,9 @@ const actionsForRender = {
   tree: (node, fn) => fn(node.children),
   removed: node => `Property '${buildPropertyPath(node)}' was removed\n`,
   added: node => `Property '${buildPropertyPath(node)}' was added with value: ${valueToString(node.after)}\n`,
-  changed: node => `Property '${buildPropertyPath(node)}' was updated. From '${valueToString(node.before)} to ${valueToString(node.after)}'\n`,
+  changed: node => (
+    `Property '${buildPropertyPath(node)}' was updated. From '${valueToString(node.before)} to ${valueToString(node.after)}'\n`
+  ),
   unchanged: node => `Property '${buildPropertyPath(node)}' was not updated\n`,
 };
 
