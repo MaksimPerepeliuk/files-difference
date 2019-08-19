@@ -1,11 +1,12 @@
 import getParseFiles from './parsers';
 import buildAst from './ast';
-import renderForTree from './formatters/tree';
-import renderForPlain from './formatters/plain';
+import render from './render';
+import actionsForTree from './formatters/tree';
+import actionsForPlain from './formatters/plain';
 
 const renders = {
-  plain: renderForPlain,
-  tree: renderForTree,
+  plain: render(actionsForPlain),
+  tree: render(actionsForTree),
   json: JSON.stringify,
 };
 

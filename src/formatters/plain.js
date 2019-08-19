@@ -6,7 +6,7 @@ const buildPropertyPath = node => (
 
 const valueToString = value => (_.isObject(value) ? '[complex value]' : value);
 
-const actionsForRender = {
+export default {
   tree: (node, fn) => fn(node.children),
   removed: node => `Property '${buildPropertyPath(node)}' was removed\n`,
   added: node => `Property '${buildPropertyPath(node)}' was added with value: ${valueToString(node.after)}\n`,
@@ -15,7 +15,3 @@ const actionsForRender = {
   ),
   unchanged: node => `Property '${buildPropertyPath(node)}' was not updated\n`,
 };
-
-const renderForPlain = ast => ast.reduce((acc, node) => `${acc}${actionsForRender[node.type](node, renderForPlain)}`, '');
-
-export default renderForPlain;

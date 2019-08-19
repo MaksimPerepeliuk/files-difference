@@ -12,7 +12,7 @@ const objectToString = (value) => {
   return value;
 };
 
-const renderActions = {
+export default {
   tree: (node, fn) => `\n${getSpaces(node.depth)}${node.key}: {${fn(node.children)}\n${getSpaces(node.depth)}}`,
   removed: node => `\n${getSpaces(node.depth)}- ${node.key}: ${objectToString(node.before, node.depth)}`,
   added: node => `\n${getSpaces(node.depth)}+ ${node.key}: ${objectToString(node.after, node.depth)}`,
@@ -21,7 +21,3 @@ const renderActions = {
   ),
   unchanged: node => `\n  ${getSpaces(node.depth)}${node.key}: ${objectToString(node.before, node.depth)}`,
 };
-
-const renderForTree = ast => ast.reduce((acc, node) => `${acc}${renderActions[node.type](node, renderForTree)}`, '');
-
-export default renderForTree;
