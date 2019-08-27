@@ -22,4 +22,4 @@ export default (pathToFileBefore, pathToFileAfter) => {
   const parsedFileBefore = parse(contentFileBefore);
   const parsedFileAfter = parse(contentFileAfter);
   return { parsedFileBefore, parsedFileAfter };
-}
+};

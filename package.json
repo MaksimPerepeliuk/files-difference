@@ -25,11 +25,15 @@
     "@babel/core": "^7.5.5",
     "@babel/node": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
+    "babel-eslint": "^10.0.3",
     "babel-jest": "^24.8.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-import": "^2.18.2",
-    "jest": "^24.8.0"
+    "eslint-plugin-jest": "^22.15.2",
+    "eslint-plugin-lodash-fp": "^2.2.0-a1",
+    "jest": "^24.9.0"
   },
   "dependencies": {
     "commander": "^2.20.0",
