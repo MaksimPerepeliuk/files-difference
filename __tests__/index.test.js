@@ -1,56 +1,30 @@
 import fs from 'fs';
 import gendiff from '../src';
+import path from 'path';
 
-const correctOutputTree1 = fs.readFileSync('__tests__/__fixtures__/correct-output-tree1', 'utf-8');
-const correctOutputTree2 = fs.readFileSync('__tests__/__fixtures__/correct-output-tree2', 'utf-8');
-const correctOutputPlain1 = fs.readFileSync('__tests__/__fixtures__/correct-output-plain1', 'utf-8');
-const correctOutputPlain2 = fs.readFileSync('__tests__/__fixtures__/correct-output-plain2', 'utf-8');
-const correctOutputJson = fs.readFileSync('__tests__/__fixtures__/correct-output-json', 'utf-8');
-const correctOutputJson2 = fs.readFileSync('__tests__/__fixtures__/correct-output-json2', 'utf-8');
+const commonPath = '__tests__/__fixtures__/';
 
-const pathes = [
-  ['__tests__/__fixtures__/JSON/before1.json', '__tests__/__fixtures__/JSON/after1.json', correctOutputTree1],
-  ['__tests__/__fixtures__/JSON/before2.json', '__tests__/__fixtures__/JSON/after2.json', correctOutputTree2],
-  ['__tests__/__fixtures__/YAML/before.yml', '__tests__/__fixtures__/YAML/after.yml', correctOutputTree1],
-  ['__tests__/__fixtures__/YAML/before2.yml', '__tests__/__fixtures__/YAML/after2.yml', correctOutputTree2],
-  ['__tests__/__fixtures__/ini/before.ini', '__tests__/__fixtures__/ini/after.ini', correctOutputTree1],
-  ['__tests__/__fixtures__/ini/before2.ini', '__tests__/__fixtures__/ini/after2.ini', correctOutputTree2],
+const dataForTest = [
+  ['before.json', 'after.json', 'correct-output-flat'],
+  ['before.yml', 'after.yml', 'correct-output-flat'],
+  ['before.ini', 'after.ini', 'correct-output-flat'],
+  ['before2.json', 'after2.json', 'correct-output-tree'],
+  ['before2.yml', 'after2.yml', 'correct-output-tree'],
+  ['before2.ini', 'after2.ini', 'correct-output-tree'],
+  ['before2.json', 'after2.json', 'correct-output-plain', 'plain'],
+  ['before2.yml', 'after2.yml', 'correct-output-plain', 'plain'],
+  ['before2.ini', 'after2.ini', 'correct-output-plain', 'plain'],
+  ['before2.json', 'after2.json', 'correct-output-json', 'json'],
+  ['before2.yml', 'after2.yml', 'correct-output-json', 'json'],
+  ['before2.ini', 'after2.ini', 'correct-output-json', 'json'],
 ];
 
-const pathes2 = [
-  ['__tests__/__fixtures__/JSON/before1.json', '__tests__/__fixtures__/JSON/after1.json', correctOutputPlain1],
-  ['__tests__/__fixtures__/JSON/before2.json', '__tests__/__fixtures__/JSON/after2.json', correctOutputPlain2],
-  ['__tests__/__fixtures__/YAML/before.yml', '__tests__/__fixtures__/YAML/after.yml', correctOutputPlain1],
-  ['__tests__/__fixtures__/YAML/before2.yml', '__tests__/__fixtures__/YAML/after2.yml', correctOutputPlain2],
-  ['__tests__/__fixtures__/ini/before.ini', '__tests__/__fixtures__/ini/after.ini', correctOutputPlain1],
-  ['__tests__/__fixtures__/ini/before2.ini', '__tests__/__fixtures__/ini/after2.ini', correctOutputPlain2],
-];
-
-const pathes3 = [
-  ['__tests__/__fixtures__/JSON/before1.json', '__tests__/__fixtures__/JSON/after1.json', correctOutputJson],
-  ['__tests__/__fixtures__/JSON/before2.json', '__tests__/__fixtures__/JSON/after2.json', correctOutputJson2],
-  ['__tests__/__fixtures__/YAML/before.yml', '__tests__/__fixtures__/YAML/after.yml', correctOutputJson],
-  ['__tests__/__fixtures__/YAML/before2.yml', '__tests__/__fixtures__/YAML/after2.yml', correctOutputJson2],
-  ['__tests__/__fixtures__/ini/before2.ini', '__tests__/__fixtures__/ini/after2.ini', correctOutputJson2],
-];
-
-test.each(pathes)(
-  'compare two files "tree" format(%s, %s)',
-  (path1, path2, expected) => {
-    expect(gendiff(path1, path2)).toBe(expected);
-  },
-);
-
-test.each(pathes2)(
-  'compare two files "plain" format(%s, %s)',
-  (path1, path2, expected) => {
-    expect(gendiff(path1, path2, 'plain')).toBe(expected);
-  },
-);
-
-test.each(pathes3)(
-  'compare two files "json" format(%s, %s)',
-  (path1, path2, expected) => {
-    expect(gendiff(path1, path2, 'json')).toBe(expected);
+test.each(dataForTest)(
+  'compare two files (%s, %s)',
+  (path1, path2, expected, format = 'tree') => {
+    const pathToFile1 = path.join(commonPath, path1);
+    const pathToFile2 = path.join(commonPath, path2);
+    const correctOutput = fs.readFileSync(path.join(commonPath, expected), 'utf-8');
+    expect(gendiff(pathToFile1, pathToFile2, format)).toBe(correctOutput);
   },
 );

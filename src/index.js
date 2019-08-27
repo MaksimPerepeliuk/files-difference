@@ -12,5 +12,7 @@ const renders = {
 
 export default (pathToFileBefore, pathToFileAfter, type = 'tree') => {
   const { parsedFileBefore, parsedFileAfter } = getParseFiles(pathToFileBefore, pathToFileAfter);
-  return renders[type](buildAst(parsedFileBefore, parsedFileAfter));
+  const ast = buildAst(parsedFileBefore, parsedFileAfter);
+  const outputContent = type === 'tree' ? `{${renders[type](ast)}\n}` : renders[type](ast);
+  return outputContent;
 };

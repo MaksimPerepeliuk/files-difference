@@ -1,5 +1,5 @@
 start:
-	sudo node dist/bin/gendiff.js
+	node dist/bin/gendiff.js
 
 lint:
 	npx eslint .
