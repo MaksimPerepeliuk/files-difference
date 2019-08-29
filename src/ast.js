@@ -39,7 +39,7 @@ const getActionForAst = (key, obj1, obj2) => (
 );
 
 const buildAst = (obj1, obj2, depth = 1, parents = []) => {
-  const keys = _.uniq([...Object.keys(obj1), ...Object.keys(obj2)]).sort();
+  const keys = _.union(_.keys(obj1), _.keys(obj2)).sort();
   return keys.map((key) => {
     const { type, process } = getActionForAst(key, obj1, obj2);
     const { before, after, children } = process(key, obj1, obj2, buildAst, depth, parents);

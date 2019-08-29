@@ -1,18 +1,20 @@
-import getParseFiles from './parsers';
+import fs from 'fs';
+import path from 'path';
+import getParsedFiles from './parsers';
 import buildAst from './ast';
 import render from './render';
-import actionsForTree from './formatters/tree';
-import actionsForPlain from './formatters/plain';
 
-const renders = {
-  plain: render(actionsForPlain),
-  tree: render(actionsForTree),
-  json: JSON.stringify,
-};
+const getContent = pathToFile => fs.readFileSync(pathToFile, 'utf-8');
 
 export default (pathToFileBefore, pathToFileAfter, type = 'tree') => {
-  const { parsedFileBefore, parsedFileAfter } = getParseFiles(pathToFileBefore, pathToFileAfter);
+  const contentFileBefore = getContent(pathToFileBefore);
+  const contentFileAfter = getContent(pathToFileAfter);
+  const formatFile = path.extname(pathToFileBefore).slice(1);
+  const {
+    parsedFileBefore,
+    parsedFileAfter,
+  } = getParsedFiles(contentFileBefore, contentFileAfter, formatFile);
   const ast = buildAst(parsedFileBefore, parsedFileAfter);
-  const outputContent = type === 'tree' ? `{${renders[type](ast)}\n}` : renders[type](ast);
+  const outputContent = render(ast, type);
   return outputContent;
 };
