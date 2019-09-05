@@ -7,9 +7,8 @@ const parsers = {
   ini: ini.parse,
 };
 
-export default (contentFileBefore, contentFileAfter, formatFile) => {
-  const parse = parsers[formatFile];
-  const parsedFileBefore = parse(contentFileBefore);
-  const parsedFileAfter = parse(contentFileAfter);
-  return { parsedFileBefore, parsedFileAfter };
+export default (contentFile, formatFile) => {
+  const parser = parsers[formatFile];
+  const parsedFile = parser(contentFile);
+  return parsedFile;
 };

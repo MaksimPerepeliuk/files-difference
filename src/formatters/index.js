@@ -1,8 +1,8 @@
-import actionsForTree from './tree';
-import actionsForPlain from './plain';
+import renderTreeFormat from './tree';
+import renderPlainFormat from './plain';
 
 export default {
-  plain: actionsForPlain,
-  tree: actionsForTree,
+  tree: renderTreeFormat,
+  plain: renderPlainFormat,
   json: JSON.stringify,
 };

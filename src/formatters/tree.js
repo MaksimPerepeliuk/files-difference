@@ -3,7 +3,7 @@ import _ from 'lodash';
 const indentation = 4;
 const subIndentation = 2;
 
-const makeSpaces = (node, sub = 0, add = 0) => ' '.repeat(node.depth * indentation - sub + add);
+const makeSpaces = (depth, sub = 0, add = 0) => ' '.repeat(depth * indentation - sub + add);
 
 const objectToString = (value, parent) => {
   if (_.isObject(value)) {
@@ -14,14 +14,21 @@ const objectToString = (value, parent) => {
   return value;
 };
 
-export default {
-  tree: (node, fn) => `\n${makeSpaces(node)}${node.key}: {${fn(node.children)}\n${makeSpaces(node)}}`,
-  removed: node => `\n${makeSpaces(node, subIndentation)}- ${node.key}: ${objectToString(node.before, node)}`,
-  added: node => `\n${makeSpaces(node, subIndentation)}+ ${node.key}: ${objectToString(node.after, node)}`,
-  changed: (node) => {
-    const removed = `${makeSpaces(node, subIndentation)}- ${node.key}: ${objectToString(node.before, node)}`;
-    const added = `${makeSpaces(node, subIndentation)}+ ${node.key}: ${objectToString(node.after, node)}`;
+const treeFormatActions = {
+  tree: (node, depth, fn) => `\n${makeSpaces(depth)}${node.key}: {${fn(node.children, depth + 1)}\n${makeSpaces(depth)}}`,
+  removed: (node, depth) => `\n${makeSpaces(depth, subIndentation)}- ${node.key}: ${objectToString(node.beforeValue, depth)}`,
+  added: (node, depth) => `\n${makeSpaces(depth, subIndentation)}+ ${node.key}: ${objectToString(node.afterValue, depth)}`,
+  changed: (node, depth) => {
+    const removed = `${makeSpaces(depth, subIndentation)}- ${node.key}: ${objectToString(node.beforeValue, depth)}`;
+    const added = `${makeSpaces(depth, subIndentation)}+ ${node.key}: ${objectToString(node.afterValue, depth)}`;
     return `\n${removed} \n${added}`;
   },
-  unchanged: node => `\n${makeSpaces(node)}${node.key}: ${objectToString(node.before, node)}`,
+  unchanged: (node, depth) => `\n${makeSpaces(depth)}${node.key}: ${objectToString(node.beforeValue, depth)}`,
 };
+
+
+const processAst = (ast, indent = 1) => (
+  ast.reduce((acc, node) => `${acc}${treeFormatActions[node.type](node, indent, processAst)}`, '')
+);
+
+export default ast => `{${processAst(ast)}\n}`;
