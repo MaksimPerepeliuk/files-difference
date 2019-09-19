@@ -14,5 +14,5 @@ export default (pathToFileBefore, pathToFileAfter, format = 'tree') => {
   const parsedFileBefore = getParsedContentFile(pathToFileBefore);
   const parsedFileAfter = getParsedContentFile(pathToFileAfter);
   const ast = buildAst(parsedFileBefore, parsedFileAfter);
-  return render[format](ast);
+  return render(ast, format);
 };

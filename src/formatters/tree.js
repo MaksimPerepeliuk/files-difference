@@ -1,34 +1,38 @@
 import _ from 'lodash';
 
 const indentation = 4;
-const subIndentation = 2;
+const subIndent = 2;
 
-const makeSpaces = (depth, sub = 0, add = 0) => ' '.repeat(depth * indentation - sub + add);
+const makeSpaces = (indent, sub = 0) => ' '.repeat(indent - sub);
 
-const objectToString = (value, parent) => {
-  if (_.isObject(value)) {
-    const keys = Object.keys(value);
-    return `{\n${keys.map(elem => `${makeSpaces(parent, 0, indentation)}${elem}: ${value[elem]}`).join('\n')}\n${makeSpaces(parent)}}`;
+const stringify = (value, indent = 0) => {
+  if (!_.isObject(value)) {
+    return value;
   }
-
-  return value;
+  const keys = Object.keys(value);
+  const stringsFromKeys = keys
+    .map(key => `${makeSpaces(indent, subIndent)}  ${key}: ${stringify(value[key], indent + indentation)}`)
+    .join('\n');
+  return `{\n${stringsFromKeys}\n${makeSpaces(indent, indentation)}}`;
 };
 
-const treeFormatActions = {
-  tree: (node, depth, fn) => `\n${makeSpaces(depth)}${node.key}: {${fn(node.children, depth + 1)}\n${makeSpaces(depth)}}`,
-  removed: (node, depth) => `\n${makeSpaces(depth, subIndentation)}- ${node.key}: ${objectToString(node.beforeValue, depth)}`,
-  added: (node, depth) => `\n${makeSpaces(depth, subIndentation)}+ ${node.key}: ${objectToString(node.afterValue, depth)}`,
-  changed: (node, depth) => {
-    const removed = `${makeSpaces(depth, subIndentation)}- ${node.key}: ${objectToString(node.beforeValue, depth)}`;
-    const added = `${makeSpaces(depth, subIndentation)}+ ${node.key}: ${objectToString(node.afterValue, depth)}`;
-    return `\n${removed} \n${added}`;
-  },
-  unchanged: (node, depth) => `\n${makeSpaces(depth)}${node.key}: ${objectToString(node.beforeValue, depth)}`,
+const formatElement = {
+  tree: (indent, element, f) => `${makeSpaces(indent)}${element.key}: ${f(element.children, indent + indentation)}`,
+  removed: (indent, element) => `${makeSpaces(indent, subIndent)}- ${element.key}: ${stringify(element.beforeValue, indent + indentation)}`,
+  added: (indent, element) => `${makeSpaces(indent, subIndent)}+ ${element.key}: ${stringify(element.afterValue, indent + indentation)}`,
+  changed: (indent, element) => [
+    `${makeSpaces(indent, subIndent)}+ ${element.key}: ${stringify(element.afterValue, indent + indentation)}`,
+    `${makeSpaces(indent, subIndent)}- ${element.key}: ${stringify(element.beforeValue, indent + indentation)}`,
+  ],
+  unchanged: (indent, element) => `${makeSpaces(indent)}${element.key}: ${element.beforeValue}`,
 };
 
+const renderTreeFormat = (astTree, indent = indentation) => {
+  const stringsFromTree = astTree
+    .map(node => formatElement[node.type](indent, node, renderTreeFormat));
+  const resultStrings = _.flatten(stringsFromTree).join('\n');
 
-const processAst = (ast, indent = 1) => (
-  ast.reduce((acc, node) => `${acc}${treeFormatActions[node.type](node, indent, processAst)}`, '')
-);
+  return `{\n${resultStrings}\n${makeSpaces(indent, indentation)}}`;
+};
 
-export default ast => `{${processAst(ast)}\n}`;
+export default renderTreeFormat;

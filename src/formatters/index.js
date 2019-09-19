@@ -1,8 +1,10 @@
 import renderTreeFormat from './tree';
 import renderPlainFormat from './plain';
 
-export default {
+const renders = {
   tree: renderTreeFormat,
   plain: renderPlainFormat,
   json: JSON.stringify,
 };
+
+export default (ast, format) => renders[format](ast);
